@@ -1,0 +1,6 @@
+target/
+/.idea
+localdev.conf
+*~
+build-image/
+build-chart/
