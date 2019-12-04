@@ -1,8 +1,9 @@
 import December1.fuelForMass
 import December1.fuelForMassCompensated
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class December1Test extends org.scalatest.FlatSpec with Matchers {
+class December1Test extends AnyFlatSpec with Matchers {
   "fuelForMass " should "compute fuel for mass " in {
     fuelForMass(2) should be(0)
     fuelForMass(12) should be(2)
