@@ -1,14 +1,18 @@
-import December5.IO
-import December5.evaluateInstruction
-import December5.runProgram
+import IntCodeComputer.{
+  IO,
+  Program,
+  evaluateInstruction,
+  runProgram,
+  runPrograms
+}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class December5Test extends AnyFlatSpec with Matchers {
+class IntCodeComputerTest extends AnyFlatSpec with Matchers {
 
   class MemIo(r: Int = 42) extends IO {
     var out: List[Int] = List.empty
-    override def read(): Int = r
+    override def read() = Some(r)
     override def write(i: Int): Unit = out = i :: out
   }
 
@@ -45,7 +49,7 @@ class December5Test extends AnyFlatSpec with Matchers {
     testIO.out should be(List(4))
   }
 
-  "A program evaluator" should "evaluate" in {
+  "A program runner" should "run programs" in {
     runProgram(List(1, 0, 0, 0, 99), 0, io) should be(List(2, 0, 0, 0, 99))
     runProgram(List(2, 3, 0, 3, 99), 0, io) should be(List(2, 3, 0, 6, 99))
     runProgram(List(2, 4, 4, 5, 99, 0), 0, io) should be(
@@ -142,5 +146,23 @@ class December5Test extends AnyFlatSpec with Matchers {
       runProgram(`jump-test-immediate-mode`, 0, testIO)
       testIO.out should be(List(1))
     }
+  }
+
+  "A programs evaluator" should "run multiple programs" in {
+    val (p1, expectedp1) = Program(List(1, 0, 0, 0, 99), 0, io) -> List(2,
+                                                                        0,
+                                                                        0,
+                                                                        0,
+                                                                        99)
+
+    val (p2, expectedp2) = Program(List(2, 4, 4, 5, 99, 0), 0, io) -> List(2, 4,
+      4, 5, 99, 9801)
+
+    val (p3, expectedp3) = Program(List(1, 1, 1, 4, 99, 5, 6, 0, 99), 0, io) -> List(
+        30, 1, 1, 4, 2, 5, 6, 0, 99)
+
+    runPrograms(List(p1, p2, p3)) should be(
+      List(expectedp1, expectedp2, expectedp3))
+
   }
 }
